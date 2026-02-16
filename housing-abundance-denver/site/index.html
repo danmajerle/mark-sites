@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Denver Housing Pipeline</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <div class="brand">Denver Housing Pipeline</div>
+      <div class="tag">Real v1 data pipeline · permit-derived development tracker</div>
+    </header>
+
+    <section class="hero">
+      <h1>Track new housing delivery in Denver, with unit counts and project status.</h1>
+      <p>v1 is powered by City and County of Denver residential construction permit data and rolled up to project-level records.
+      It’s intentionally opinionated and transparent about assumptions.</p>
+    </section>
+
+    <section class="kpis">
+      <article class="kpi"><div class="label">Projects tracked</div><div class="value" id="kpiProjects">—</div></article>
+      <article class="kpi"><div class="label">Pipeline units</div><div class="value" id="kpiUnits">—</div></article>
+      <article class="kpi"><div class="label">Under construction units</div><div class="value" id="kpiUC">—</div></article>
+      <article class="kpi"><div class="label">Delivered units</div><div class="value" id="kpiDelivered">—</div></article>
+    </section>
+
+    <section class="panel" style="padding:12px; margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+      <input id="search" placeholder="Search project / address / neighborhood" style="flex:1; min-width:220px; padding:10px; border:1px solid var(--line); border-radius:10px;" />
+      <select id="statusFilter" style="padding:10px; border:1px solid var(--line); border-radius:10px;">
+        <option value="All">All statuses</option>
+        <option>Proposed</option>
+        <option>Approved</option>
+        <option>Under Construction</option>
+        <option>Delivered</option>
+        <option>Cancelled</option>
+      </select>
+    </section>
+
+    <section class="panel table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Project</th><th>Neighborhood</th><th>Status</th><th>Units</th><th>Permits</th><th>Last permit date</th><th>Source</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+
+    <footer id="footerNote">Loading…</footer>
+  </main>
+
+  <script src="data.v1.js"></script>
+  <script>
+    const payload = window.DENVER_HOUSING_V1 || {kpis:{}, developments:[]};
+    const data = payload.developments || [];
+
+    const fmt = n => Number(n || 0).toLocaleString();
+
+    document.getElementById('kpiProjects').textContent = fmt(payload.kpis.projects_tracked || data.length);
+    document.getElementById('kpiUnits').textContent = fmt(payload.kpis.pipeline_units);
+    document.getElementById('kpiUC').textContent = fmt(payload.kpis.under_construction_units);
+    document.getElementById('kpiDelivered').textContent = fmt(payload.kpis.delivered_units);
+
+    document.getElementById('footerNote').innerHTML = `Updated: ${payload.kpis.updated_at || '—'} · Source: <code>${payload.kpis.source || '—'}</code>`;
+
+    const classFor = s => ({
+      'Proposed':'proposed',
+      'Approved':'approved',
+      'Under Construction':'uc',
+      'Delivered':'delivered',
+      'Cancelled':'delivered'
+    }[s] || 'proposed');
+
+    const rowsEl = document.getElementById('rows');
+    const searchEl = document.getElementById('search');
+    const statusEl = document.getElementById('statusFilter');
+
+    function render() {
+      const q = (searchEl.value || '').toLowerCase().trim();
+      const status = statusEl.value;
+
+      let filtered = data.filter(d => {
+        const hit = !q || [d.project_name, d.address, d.neighborhood].join(' ').toLowerCase().includes(q);
+        const statusHit = status === 'All' || d.status === status;
+        return hit && statusHit;
+      });
+
+      // sort: larger unit projects first, then newest issuance
+      filtered = filtered.sort((a,b) => (Number(b.units_total||0)-Number(a.units_total||0)) || String(b.last_date_issued||'').localeCompare(String(a.last_date_issued||'')));
+
+      rowsEl.innerHTML = filtered.slice(0, 500).map(d => `
+        <tr>
+          <td><strong>${d.project_name || '—'}</strong><br><span style="color:var(--muted)">${d.address || ''}</span></td>
+          <td>${d.neighborhood || '—'}</td>
+          <td><span class="status ${classFor(d.status)}">${d.status || '—'}</span></td>
+          <td>${fmt(d.units_total)}</td>
+          <td>${fmt(d.permit_count)}</td>
+          <td>${d.last_date_issued || d.last_final_date || d.first_date_received || '—'}</td>
+          <td><a href="${d.source_url}" target="_blank" rel="noreferrer">link</a></td>
+        </tr>
+      `).join('');
+    }
+
+    searchEl.addEventListener('input', render);
+    statusEl.addEventListener('change', render);
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+name = "housing-abundance-denver"
+compatibility_date = "2026-02-16"
+
+[assets]
+directory = "./site"
+not_found_handling = "single-page-application"

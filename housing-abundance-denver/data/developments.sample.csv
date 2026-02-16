@@ -1,0 +1,4 @@
+project_name,address,neighborhood,status,units_total,units_affordable,stories,developer,permit_case_id,source_url,last_updated
+Example Flats,1234 W Colfax Ave,West Colfax,Proposed,180,36,7,Example Dev Co,2026-PLAN-0001,https://www.denvergov.org,2026-02-16
+River North Homes,3500 Blake St,RiNo,Under Construction,240,30,8,Sample Urban Partners,2025-SITE-1022,https://www.denvergov.org,2026-02-16
+Cap Hill Residences,900 N Grant St,Capitol Hill,Approved,95,10,5,Cityline Housing,2025-RES-7731,https://www.denvergov.org,2026-02-16

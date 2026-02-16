@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Essay Template — Mark Wittman</title>
+    <meta name="description" content="Essay template for Mark Wittman." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="wrap site-header">
+      <nav>
+        <a href="index.html" aria-label="Homepage">Mark Wittman</a>
+        <div class="nav-links">
+          <a href="index.html#writing">Writing</a>
+          <a href="index.html#tools">Open Source Tools</a>
+          <a href="index.html#about">About</a>
+          <button id="theme-toggle" type="button" aria-label="Toggle color theme">◐ Theme</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="wrap essay-wrap">
+      <article class="essay">
+        <p class="kicker">ESSAY TEMPLATE</p>
+        <h1>The Two Curves: Energy Cost and Intelligence Cost</h1>
+        <p class="essay-meta">Draft · February 2026 · 8 min read</p>
+
+        <p class="lede">
+          The central economic story of this decade is the convergence of two falling cost curves:
+          energy and intelligence. When those curves drop together, they can increase both industrial
+          throughput and quality of life.
+        </p>
+
+        <h2>1) What’s actually changing</h2>
+        <p>
+          Energy systems are becoming more modular, software-directed, and cost-compressible over time.
+          In parallel, usable intelligence is becoming cheaper through model efficiency, better inference,
+          and practical workflow integration.
+        </p>
+
+        <h2>2) Why this compounds</h2>
+        <p>
+          Cheaper intelligence improves how we plan, design, and operate systems. Better systems reduce
+          waste and bottlenecks, which lowers real costs. Lower costs increase adoption and experimentation,
+          creating another wave of optimization.
+        </p>
+
+        <h2>3) Operator implications</h2>
+        <ul>
+          <li>Track cycle-time and reliability, not just model benchmarks.</li>
+          <li>Treat power and permitting timelines as first-class product constraints.</li>
+          <li>Build resilient supply and execution networks, not single-point dependencies.</li>
+        </ul>
+
+        <h2>4) The practical test</h2>
+        <p>
+          If this thesis is right, teams that combine energy realism with AI-native operations should ship
+          faster and at lower all-in cost than peers that optimize only one side of the equation.
+        </p>
+      </article>
+    </main>
+
+    <footer class="wrap footer">
+      <p><a href="index.html">← Back to homepage</a></p>
+    </footer>
+
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const key = 'mw-theme';
+        const toggle = document.getElementById('theme-toggle');
+
+        const saved = localStorage.getItem(key);
+        if (saved === 'dark') root.classList.add('theme-dark');
+
+        toggle?.addEventListener('click', function () {
+          root.classList.toggle('theme-dark');
+          localStorage.setItem(key, root.classList.contains('theme-dark') ? 'dark' : 'light');
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+:root {
+  --bg: #f7f7f5;
+  --text: #101113;
+  --muted: #61656b;
+  --card: #ffffff;
+  --line: #e7e8eb;
+  --accent: #2f6bff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 24px; }
+.brand { font-size: 1.1rem; font-weight: 600; letter-spacing: .01em; }
+.tag { color: var(--muted); font-size: .9rem; }
+.hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.08; margin: 8px 0 10px; }
+.hero p { color: var(--muted); max-width: 70ch; }
+.kpis { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 18px 0 24px; }
+@media (min-width: 760px){ .kpis { grid-template-columns: repeat(4,1fr);} }
+.kpi { background: var(--card); border: 1px solid var(--line); padding: 14px; border-radius: 12px; }
+.kpi .label { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.kpi .value { font-size: 1.45rem; margin-top: 4px; font-weight: 650; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 820px; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: .92rem; }
+th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); background: #fbfbfc; }
+.status { padding: 4px 8px; border-radius: 999px; font-size: .75rem; border: 1px solid var(--line); display: inline-block; }
+.status.proposed { background: #f3f6ff; color: #2448a6; }
+.status.approved { background: #f6f5ff; color: #5f46b3; }
+.status.uc { background: #eefaf6; color: #1e7a52; }
+.status.delivered { background: #f0f2f4; color: #48525f; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+footer { color: var(--muted); font-size: .85rem; margin-top: 14px; }

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mark Wittman</title>
+    <meta
+      name="description"
+      content="Cheaper energy × cheaper intelligence → better quality of life. Notes from Mark Wittman."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="wrap site-header">
+      <nav>
+        <a href="#" aria-label="Homepage">Mark Wittman</a>
+        <div class="nav-links">
+          <a href="#writing">Writing</a>
+          <a href="#tools">Open Source Tools</a>
+          <a href="#about">About</a>
+          <button id="theme-toggle" type="button" aria-label="Toggle color theme">◐ Theme</button>
+        </div>
+      </nav>
+
+      <section class="hero editorial-hero">
+        <p class="kicker">FIELD NOTES ON ABUNDANCE</p>
+        <h1>Cheaper energy × cheaper intelligence → better quality of life.</h1>
+        <p class="lede">
+          Strategy and execution notes from the edge of AI infrastructure, energy systems,
+          and industrial build speed.
+        </p>
+        <div class="hero-links">
+          <a href="#writing">Read latest writing</a>
+          <a href="essay-template.html">View essay template</a>
+        </div>
+      </section>
+    </header>
+
+    <main class="wrap">
+      <section id="writing" class="block">
+        <h2>Writing</h2>
+        <ul>
+          <li>
+            <a href="essay-template.html">The Two Curves: Energy Cost and Intelligence Cost</a>
+            <span>— draft template</span>
+          </li>
+          <li><a href="#">AI Productivity Is a Management Problem First</a> <span>— coming soon</span></li>
+          <li><a href="#">Abundance Strategy for Operators</a> <span>— coming soon</span></li>
+        </ul>
+      </section>
+
+      <section id="tools" class="block">
+        <h2>Open Source Productivity Tools</h2>
+        <p>
+          Open source tools I’ve built to make teams faster. Practical utilities,
+          not science projects.
+        </p>
+
+        <article class="tool-card">
+          <h3>Presentation Engine</h3>
+          <p>Turns structured narrative input into presentation output with revision loops.</p>
+          <p class="meta">Status: Active</p>
+        </article>
+
+        <article class="tool-card">
+          <h3>Chuckles</h3>
+          <p>Automated creative pipeline with strict health checks and resilient run telemetry.</p>
+          <p class="meta">Status: Active development</p>
+        </article>
+      </section>
+
+      <section id="about" class="block">
+        <h2>About</h2>
+        <p>
+          I’m Mark Wittman, Chief of Staff to the President at Crusoe Energy Systems.
+          I focus on strategy and execution where energy systems meet AI infrastructure.
+        </p>
+        <p>
+          My operating lens is simple: reduce cost curves, increase capability,
+          and convert technical progress into tangible improvements in how people live.
+        </p>
+      </section>
+    </main>
+
+    <footer class="wrap footer">
+      <p>
+        Find me on
+        <a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+        and
+        <a href="https://x.com" target="_blank" rel="noreferrer">X</a>.
+      </p>
+    </footer>
+
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const key = 'mw-theme';
+        const toggle = document.getElementById('theme-toggle');
+
+        const saved = localStorage.getItem(key);
+        if (saved === 'dark') root.classList.add('theme-dark');
+
+        toggle?.addEventListener('click', function () {
+          root.classList.toggle('theme-dark');
+          localStorage.setItem(key, root.classList.contains('theme-dark') ? 'dark' : 'light');
+        });
+      })();
+    </script>
+  </body>
+</html>
