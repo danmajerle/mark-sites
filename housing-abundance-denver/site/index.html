@@ -124,11 +124,18 @@
     }
 
     function render() {
-      const q = (searchEl.value || '').toLowerCase().trim();
+      const qRaw = (searchEl.value || '').toLowerCase().trim();
       const status = statusEl.value;
 
+      // Multi-term search: comma-separated terms act as OR (good for multiple neighborhoods)
+      // Example: "rino, capitol hill, west colfax"
+      const terms = qRaw
+        ? qRaw.split(',').map(t => t.trim()).filter(Boolean)
+        : [];
+
       let filtered = data.filter(d => {
-        const hit = !q || [d.project_name, d.address, d.neighborhood].join(' ').toLowerCase().includes(q);
+        const haystack = [d.project_name, d.address, d.neighborhood].join(' ').toLowerCase();
+        const hit = terms.length === 0 || terms.some(t => haystack.includes(t));
         const statusHit = status === 'All' || d.status === status;
         return hit && statusHit;
       });
