@@ -169,6 +169,18 @@
       `).join('');
     }
 
+    function updateSortIndicators() {
+      sortableHeaders.forEach(h => {
+        const label = h.getAttribute('data-label') || h.textContent.replace(/[▲▼↕]/g,'').trim();
+        const key = h.getAttribute('data-sort');
+        if (key === sortKey) {
+          h.textContent = `${label} ${sortDir === 'asc' ? '▲' : '▼'}`;
+        } else {
+          h.textContent = `${label} ↕`;
+        }
+      });
+    }
+
     sortableHeaders.forEach(h => {
       h.addEventListener('click', () => {
         const key = h.getAttribute('data-sort');
@@ -179,12 +191,14 @@
           sortKey = key;
           sortDir = (key === 'units_total' || key === 'permit_count' || key === 'last_date_issued') ? 'desc' : 'asc';
         }
+        updateSortIndicators();
         render();
       });
     });
 
     searchEl.addEventListener('input', render);
     statusEl.addEventListener('change', render);
+    updateSortIndicators();
     render();
   </script>
 </body>
