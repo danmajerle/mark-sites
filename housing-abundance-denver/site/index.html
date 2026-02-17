@@ -97,6 +97,7 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
     const markerLayer = L.layerGroup().addTo(map);
+    let markerByProjectId = new Map();
 
     let sortKey = 'units_total';
     let sortDir = 'desc';
@@ -139,6 +140,7 @@
       });
 
       markerLayer.clearLayers();
+      markerByProjectId = new Map();
       const mappable = filtered.filter(d => Number.isFinite(Number(d.latitude)) && Number.isFinite(Number(d.longitude))).slice(0, 1200);
       const latlngs = [];
       mappable.forEach(d => {
@@ -151,13 +153,14 @@
         });
         marker.bindPopup(`<strong>${d.project_name || 'Project'}</strong><br>${d.address || ''}<br>Status: ${d.status || '—'}<br>Units: ${fmt(d.units_total)}`);
         marker.addTo(markerLayer);
+        markerByProjectId.set(d.project_id, marker);
       });
       if (latlngs.length > 2) {
         map.fitBounds(latlngs, {padding: [20, 20], maxZoom: 13});
       }
 
       rowsEl.innerHTML = filtered.slice(0, 500).map(d => `
-        <tr>
+        <tr data-project-id="${d.project_id || ''}" style="cursor:pointer;">
           <td><strong>${d.project_name || '—'}</strong><br><span style="color:var(--muted)">${d.address || ''}</span></td>
           <td>${d.neighborhood || '—'}</td>
           <td><span class="status ${classFor(d.status)}">${d.status || '—'}</span></td>
@@ -167,6 +170,18 @@
           <td><a href="${d.source_url}" target="_blank" rel="noreferrer">link</a></td>
         </tr>
       `).join('');
+
+      rowsEl.querySelectorAll('tr[data-project-id]').forEach(tr => {
+        tr.addEventListener('click', (ev) => {
+          if (ev.target.closest('a')) return;
+          const id = tr.getAttribute('data-project-id');
+          const marker = markerByProjectId.get(id);
+          if (!marker) return;
+          const ll = marker.getLatLng();
+          map.setView(ll, Math.max(map.getZoom(), 15), { animate: true });
+          marker.openPopup();
+        });
+      });
     }
 
     function updateSortIndicators() {
