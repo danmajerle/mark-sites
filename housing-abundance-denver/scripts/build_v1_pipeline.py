@@ -13,6 +13,7 @@ import json
 import math
 import urllib.parse
 import urllib.request
+import time
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -51,11 +52,21 @@ def fetch_page(offset: int) -> dict:
         "resultOffset": str(offset),
         "resultRecordCount": str(PAGE_SIZE),
         "orderByFields": "OBJECTID ASC",
-        "returnGeometry": "false",
+        "returnGeometry": "true",
+        "outSR": "4326",
     }
     url = f"{SERVICE}?{urllib.parse.urlencode(params)}"
-    with urllib.request.urlopen(url, timeout=60) as r:
-        return json.loads(r.read().decode("utf-8"))
+
+    attempts = 0
+    while True:
+        attempts += 1
+        try:
+            with urllib.request.urlopen(url, timeout=60) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except Exception:
+            if attempts >= 5:
+                raise
+            time.sleep(1.5 * attempts)
 
 
 def parse_int(value, default=0):
@@ -170,6 +181,10 @@ def build():
         date_issued = ts_to_date(a.get("DATE_ISSUED"))
         final_date = ts_to_date(a.get("FINAL_DATE"))
 
+        geom = feat.get("geometry") or {}
+        lon = geom.get("x")
+        lat = geom.get("y")
+
         if key not in grouped:
             grouped[key] = {
                 "project_id": key,
@@ -188,6 +203,11 @@ def build():
                 "last_final_date": final_date,
                 "permit_count": 0,
                 "valuation_total": 0.0,
+                "longitude": None,
+                "latitude": None,
+                "_lon_sum": 0.0,
+                "_lat_sum": 0.0,
+                "_coord_count": 0,
                 "permits": [],
                 "last_updated": datetime.now().date().isoformat(),
             }
@@ -196,6 +216,10 @@ def build():
         g["permit_count"] += 1
         g["units_total"] += units
         g["valuation_total"] += valuation
+        if isinstance(lon, (int, float)) and isinstance(lat, (int, float)):
+            g["_lon_sum"] += float(lon)
+            g["_lat_sum"] += float(lat)
+            g["_coord_count"] += 1
 
         # keep most progressed status
         if status_rank(status) > status_rank(g["status"]):
@@ -220,6 +244,13 @@ def build():
         })
 
     developments = [d for d in grouped.values() if d["units_total"] > 0]
+    for d in developments:
+        if d.get("_coord_count", 0) > 0:
+            d["longitude"] = round(d["_lon_sum"] / d["_coord_count"], 6)
+            d["latitude"] = round(d["_lat_sum"] / d["_coord_count"], 6)
+        d.pop("_lon_sum", None)
+        d.pop("_lat_sum", None)
+        d.pop("_coord_count", None)
     developments.sort(key=lambda d: (d["status"], d["units_total"], d["permit_count"]), reverse=True)
 
     kpis = {
@@ -257,6 +288,8 @@ def build():
             "first_date_received",
             "last_date_issued",
             "last_final_date",
+            "longitude",
+            "latitude",
             "developer",
             "permit_case_id",
             "source_url",
@@ -266,7 +299,7 @@ def build():
             w.writerow([
                 d["project_id"], d["project_name"], d["address"], d["neighborhood"], d["status"],
                 d["units_total"], d["permit_count"], round(d["valuation_total"], 2), d["first_date_received"],
-                d["last_date_issued"], d["last_final_date"], d["developer"], d["permit_case_id"], d["source_url"], d["last_updated"]
+                d["last_date_issued"], d["last_final_date"], d["longitude"], d["latitude"], d["developer"], d["permit_case_id"], d["source_url"], d["last_updated"]
             ])
 
     # JS bundle for static hosting / file open convenience
