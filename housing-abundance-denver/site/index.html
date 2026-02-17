@@ -64,9 +64,10 @@
   </main>
 
   <script src="data.v1.js"></script>
+  <script src="data.v2.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
-    const payload = window.DENVER_HOUSING_V1 || {kpis:{}, developments:[]};
+    const payload = window.DENVER_HOUSING_V2 || window.DENVER_HOUSING_V1 || {kpis:{}, developments:[]};
     const data = payload.developments || [];
 
     const fmt = n => Number(n || 0).toLocaleString();

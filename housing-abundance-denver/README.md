@@ -8,6 +8,15 @@ A sleek, minimalist website tracking Denver housing delivery with a real data pi
 - Aggregates unit counts and status signals.
 - Publishes outputs for the site and spreadsheet analysis.
 
+## What v2 adds
+- Merges permit-derived inventory with a supplemental file for **large proposed/approved projects**.
+- Supplemental source file:
+  - `data/supplemental/proposed_large_projects.csv`
+- Build v2 outputs:
+  - `data/processed/developments.v2.json`
+  - `data/processed/developments.v2.csv`
+  - `site/data.v2.js`
+
 ## Data source (v1)
 - ArcGIS layer: `ODC_DEV_RESIDENTIALCONSTPERMIT_P` (City and County of Denver)
 - URL: https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_DEV_RESIDENTIALCONSTPERMIT_P/FeatureServer
